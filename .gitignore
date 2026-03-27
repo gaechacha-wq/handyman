@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# gae_sviluppo (Area Documentale e Appunti)
+/_gae_sviluppo/
