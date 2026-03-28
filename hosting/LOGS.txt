@@ -9,6 +9,9 @@ sul tuo sito. Non sono utenti che cliccano la documentazione Phusion sul tuo dom
 Dal codice: middleware Next risponde 400 a questi path invece di farli passare all'app
 (riduce 500 nei log).
 
-I 500 su GET / o /favicon.ico da IP reali indicano ancora un problema di avvio app
-(Passenger, build .next, listen('passenger'), variabili env). Usa i log applicazione
-Node in Plesk, non solo access.log.
+I 500 su GET / o /favicon.ico da IP reali indicano problema lato app (Passenger, build
+.next, env). Se dopo deploy restano 500, controlla log Node in Plesk. app.js usa
+listen(PORT, 0.0.0.0) così Passenger può intercettare il primo listen() senza
+listen('passenger') esplicito (evita errori su alcuni server).
+
+/robots.txt statico in public/robots.txt.
