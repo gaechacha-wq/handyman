@@ -24,3 +24,9 @@ stessa ovunque: Plesk, proxy nginx/Apache, test curl.
    MySQL (MYSQL_PORT):         3301 (o valore reale)
 
    Se la PORT non coincide tra Plesk e nginx → 504 Gateway Timeout.
+
+4) Phusion Passenger (Plesk)
+   Se vedi la pagina "We're sorry, something went wrong" con footer Passenger,
+   l'app Node è avviata da Passenger: app.js usa listen('passenger') come da doc
+   Phusion. Log utili: log dominio in Plesk, /var/log/nginx/error.log (o path
+   indicato da passenger_log_file).
