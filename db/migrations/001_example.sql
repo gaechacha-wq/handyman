@@ -1,0 +1,7 @@
+-- Esempio: aggiungi qui CREATE TABLE / ALTER TABLE.
+-- Rinomina il file con prefisso numerico per l'ordine (002_..., 003_...).
+--
+-- CREATE TABLE IF NOT EXISTS example (
+--   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+--   PRIMARY KEY (id)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

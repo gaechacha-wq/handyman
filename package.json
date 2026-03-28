@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "db:migrate": "node scripts/run-migrations.cjs",
     "start": "NODE_ENV=production node app.js",
     "lint": "eslint"
   },
