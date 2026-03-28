@@ -1,6 +1,15 @@
 Hosting Plesk (come le altre app sullo stesso server)
 ====================================================
 
+Node.js
+   Usa la versione selezionata in Plesk per il dominio (es. 20.x), oppure il Node di
+   sistema per build da SSH. Non è più presente .node-version nel repo: se usi
+   nodenv sul server e vedi "version `20' is not installed", esegui
+     nodenv install 20
+   oppure disattiva nodenv per la sessione e usa il binario Plesk, es.:
+     /opt/plesk/node/20/bin/node -v
+     export PATH="/opt/plesk/node/20/bin:$PATH"
+
 0) Porte (come sugli altri server)
    Leggi hosting/PORTS.txt: la porta HTTP di Node (PORT) deve coincidere tra
    Plesk, proxy nginx/Apache e curl su 127.0.0.1. MySQL usa MYSQL_PORT (es. 3301).
