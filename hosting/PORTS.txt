@@ -1,0 +1,26 @@
+Allineamento porte (stesso schema degli altri server)
+=====================================================
+
+L'app Next ascolta su process.env.PORT (vedi app.js). Quella porta deve essere la
+stessa ovunque: Plesk, proxy nginx/Apache, test curl.
+
+1) Porta HTTP (Node)
+   - Plesk → Node.js → variabili d'ambiente: se c'è PORT=XXXX, l'app usa quella.
+     Se manca, molti setup usano 3000 o una porta assegnata dal pannello.
+   - Nginx (o Apache davanti al dominio): l'upstream verso Node deve puntare a
+       http://127.0.0.1:PORTA
+     con la STESSA PORTA dell'app.
+   - Verifica SSH (sostituisci PORTA):
+       curl -sI -o /dev/null -w "%{http_code}\n" http://127.0.0.1:PORTA/
+
+2) Porta MySQL
+   - MYSQL_PORT in .env.production (es. 3301) = porta su cui mysqld ascolta in locale.
+   - Non confondere con la porta HTTP dell'app.
+
+3) Registro dominio (compila sul server come sulle altre macchine)
+   ----------------------------------------------------------------
+   Dominio: handyman.abreve.it
+   HTTP Node (PORT effettiva): _______________
+   MySQL (MYSQL_PORT):         3301 (o valore reale)
+
+   Se la PORT non coincide tra Plesk e nginx → 504 Gateway Timeout.

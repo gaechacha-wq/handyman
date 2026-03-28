@@ -43,15 +43,19 @@ async function main() {
   loadEnvFile(path.join(root, ".env.production"));
   loadEnvFile(path.join(root, ".env"));
 
+  const databaseUrl = process.env.DATABASE_URL?.trim();
   const host = process.env.MYSQL_HOST;
   const user = process.env.MYSQL_USER;
   const password = process.env.MYSQL_PASSWORD;
   const database = process.env.MYSQL_DATABASE;
   const port = Number(process.env.MYSQL_PORT) || 3306;
 
-  if (!host || !user || password === undefined || !database) {
+  if (
+    !databaseUrl &&
+    (!host || !user || password === undefined || !database)
+  ) {
     console.error(
-      "Mancano MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD o MYSQL_DATABASE nell'ambiente o nei file .env*."
+      "Imposta DATABASE_URL oppure MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD e MYSQL_DATABASE (file .env* o ambiente)."
     );
     process.exit(1);
   }
@@ -61,14 +65,19 @@ async function main() {
     fs.mkdirSync(migrationsDir, { recursive: true });
   }
 
-  const conn = await mysql.createConnection({
-    host,
-    port,
-    user,
-    password,
-    database,
-    multipleStatements: true,
-  });
+  const conn = databaseUrl
+    ? await mysql.createConnection({
+        uri: databaseUrl,
+        multipleStatements: true,
+      })
+    : await mysql.createConnection({
+        host,
+        port,
+        user,
+        password,
+        database,
+        multipleStatements: true,
+      });
 
   await conn.query(`
     CREATE TABLE IF NOT EXISTS schema_migrations (

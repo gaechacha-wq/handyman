@@ -13,12 +13,18 @@ const host = "0.0.0.0";
 const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
-  createServer((req, res) => {
-    const parsedUrl = parse(req.url, true);
-    handle(req, res, parsedUrl);
-  }).listen(port, host, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on http://${host}:${port}`);
+app
+  .prepare()
+  .then(() => {
+    createServer((req, res) => {
+      const parsedUrl = parse(req.url, true);
+      handle(req, res, parsedUrl);
+    }).listen(port, host, (err) => {
+      if (err) throw err;
+      console.log(`> Ready on http://${host}:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Next.js prepare() failed:", err);
+    process.exit(1);
   });
-});

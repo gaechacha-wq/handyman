@@ -8,6 +8,12 @@ set -eu
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
+if [ "$(id -u)" -eq 0 ]; then
+  echo "==> Avviso: sei root. node_modules deve appartenere all'utente del dominio." >&2
+  echo "    Esegui: sh scripts/run-deploy-as-site-user.sh $*" >&2
+  echo "    oppure: su - UTENTE_DOMINIO -c 'cd $ROOT && sh deploy.sh $*'" >&2
+fi
+
 DO_PULL=false
 SKIP_MIGRATE=false
 

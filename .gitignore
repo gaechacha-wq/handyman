@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# Config server-specifica (come le altre app)
+hosting/site.env
 
 # vercel
 .vercel
