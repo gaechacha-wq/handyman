@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
+if [ -z "${BASH_VERSION:-}" ]; then exec /usr/bin/env bash "$0" "$@"; fi
 # Deploy completo: permessi (opz.) → git pull → npm ci → DB → build.
 #
 # Uso:
-#   ./deploy.sh [--pull] [--skip-migrate]
-#   sudo ./deploy.sh --fix-perms [--pull] [--skip-migrate]
+#   bash deploy.sh | ./deploy.sh | sh deploy.sh  [--pull] [--skip-migrate]
+#   sudo bash deploy.sh --fix-perms [--pull] [--skip-migrate]
 #
-# --fix-perms (solo root): chown/chmod da hosting/site.env, poi continua il deploy
-# come utente del sito (evita EACCES su node_modules / @tailwindcss/oxide).
-#
-# Richiede: hosting/site.env con SITE_USER e SITE_GROUP (copia da site.env.example)
-# per --fix-perms. DATABASE_URL o MYSQL_* in .env.production per db:align.
-#
-# Se lanci `sh deploy.sh`, dash non supporta pipefail: riavvio automatico con bash.
-if [ -z "${BASH_VERSION:-}" ]; then
-  exec /usr/bin/env bash "$0" "$@"
-fi
+# --fix-perms (solo root): chown/chmod; se manca hosting/site.env lo crea da site.env.example.
+# Poi deploy come utente sito. DATABASE_URL o MYSQL_* in .env.production per db:align.
 
 set -euo pipefail
 
@@ -48,9 +41,15 @@ if [[ "$FIX_PERMS" == true ]]; then
     exit 1
   fi
   ENV_FILE="$ROOT/hosting/site.env"
+  EXAMPLE="$ROOT/hosting/site.env.example"
   if [[ ! -f "$ENV_FILE" ]]; then
-    echo "==> Manca $ENV_FILE — cp hosting/site.env.example hosting/site.env" >&2
-    exit 1
+    if [[ -f "$EXAMPLE" ]]; then
+      echo "==> Creo hosting/site.env da site.env.example (controlla SITE_USER/SITE_GROUP)"
+      cp "$EXAMPLE" "$ENV_FILE"
+    else
+      echo "==> Manca $ENV_FILE e anche $EXAMPLE" >&2
+      exit 1
+    fi
   fi
   SITE_USER=$(grep '^SITE_USER=' "$ENV_FILE" | head -1 | cut -d= -f2- | tr -d '\r')
   SITE_GROUP=$(grep '^SITE_GROUP=' "$ENV_FILE" | head -1 | cut -d= -f2- | tr -d '\r')

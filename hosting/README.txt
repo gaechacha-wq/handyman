@@ -19,8 +19,9 @@ Node.js
    - Gruppo: psaserv
 
 2) Permessi / EACCES su npm (tutto in deploy.sh)
-   Con hosting/site.env (SITE_USER, SITE_GROUP) copiato da site.env.example:
+   hosting/site.env: se manca, con --fix-perms viene creato da site.env.example.
      sudo bash deploy.sh --fix-perms --pull
+   Anche: sh deploy.sh ... (re-exec automatico in bash)
    --fix-perms (solo root) fa chown su httpdocs e poi esegue il resto del deploy
    come utente del sito (npm ci, db, build). Nessun npm nella cartella come root.
    Senza pull:
