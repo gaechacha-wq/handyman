@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Deploy: dipendenze, migrazioni MySQL, build Next.js.
-# Uso: ./deploy.sh [--pull] [--skip-migrate]
+# Uso: ./deploy.sh | sh deploy.sh | bash deploy.sh  [--pull] [--skip-migrate]
 # Richiede: Node.js, npm; variabili MySQL in .env.production / .env.local / .env (o export manuali).
 
-set -euo pipefail
+set -eu
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
 DO_PULL=false
@@ -25,8 +25,8 @@ done
 
 echo "==> Directory: $ROOT"
 
-if [[ "$DO_PULL" == true ]]; then
-  if [[ -d .git ]]; then
+if [ "$DO_PULL" = "true" ]; then
+  if [ -d .git ]; then
     echo "==> git pull"
     git pull origin main
   else
@@ -37,7 +37,7 @@ fi
 echo "==> npm ci"
 npm ci
 
-if [[ "$SKIP_MIGRATE" == false ]]; then
+if [ "$SKIP_MIGRATE" = "false" ]; then
   echo "==> Migrazioni database"
   npm run db:migrate
 else
