@@ -42,5 +42,12 @@ Node.js
 
 6) Variabili in Plesk
    Allineate a contenthunter: NODE_ENV=production, DATABASE_URL (o MYSQL_*), eventuale PORT.
-   .env.production sul server deve contenere gli stessi valori usati da deploy.sh per
-   npm run db:migrate (stesso DB).
+   .env.production sul server deve contenere gli stessi valori usati da deploy per
+   l'allineamento DB (stesso DB dell'app).
+
+7) Allineamento DB nel deploy (deploy.sh)
+   Dopo npm ci esegue: npm run db:align
+     - db:check → verifica che DATABASE_URL o MYSQL_* siano presenti
+     - db:migrate → applica i file .sql in db/migrations/ (tabelle / schema)
+   Per saltare: sh deploy.sh --skip-migrate
+   Solo migrazioni SQL: npm run db:migrate

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "db:check": "node scripts/check-db-env.cjs",
     "db:migrate": "node scripts/run-migrations.cjs",
+    "db:align": "node scripts/check-db-env.cjs && node scripts/run-migrations.cjs",
     "deploy": "sh deploy.sh",
     "deploy:pull": "sh deploy.sh --pull",
     "start": "NODE_ENV=production node app.js",

@@ -1,34 +1,11 @@
 /**
  * Applica in ordine i file .sql in db/migrations/.
  * Traccia le migrazioni già eseguite nella tabella schema_migrations.
- *
- * Legge variabili da .env.local, .env.production, .env (senza dipendenze extra).
  */
 const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql2/promise");
-
-function loadEnvFile(filePath) {
-  if (!fs.existsSync(filePath)) return;
-  const raw = fs.readFileSync(filePath, "utf8");
-  for (const line of raw.split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq).trim();
-    let val = trimmed.slice(eq + 1).trim();
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
-      val = val.slice(1, -1);
-    }
-    if (key && process.env[key] === undefined) {
-      process.env[key] = val;
-    }
-  }
-}
+const { loadProjectEnv } = require("./load-env.cjs");
 
 function sqlBodyEffective(sql) {
   return sql
@@ -39,9 +16,7 @@ function sqlBodyEffective(sql) {
 
 async function main() {
   const root = process.cwd();
-  loadEnvFile(path.join(root, ".env.local"));
-  loadEnvFile(path.join(root, ".env.production"));
-  loadEnvFile(path.join(root, ".env"));
+  loadProjectEnv(root);
 
   const databaseUrl = process.env.DATABASE_URL?.trim();
   const host = process.env.MYSQL_HOST;

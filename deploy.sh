@@ -1,7 +1,7 @@
 #!/bin/sh
-# Deploy: dipendenze, migrazioni MySQL, build Next.js.
-# Uso: ./deploy.sh | sh deploy.sh | bash deploy.sh  [--pull] [--skip-migrate]
-# Richiede: Node.js, npm; variabili MySQL in .env.production / .env.local / .env (o export manuali).
+# Deploy: dipendenze → allineamento DB (tabelle) → build Next.js.
+# Uso: ./deploy.sh | sh deploy.sh  [--pull] [--skip-migrate]
+# Richiede: Node.js, npm; DATABASE_URL o MYSQL_* in .env.production / .env (allineato a Plesk).
 
 set -eu
 
@@ -44,10 +44,10 @@ echo "==> npm ci"
 npm ci
 
 if [ "$SKIP_MIGRATE" = "false" ]; then
-  echo "==> Migrazioni database"
-  npm run db:migrate
+  echo "==> Allineamento DB (check env + migrazioni / tabelle da db/migrations/)"
+  npm run db:align
 else
-  echo "==> Migrazioni saltate (--skip-migrate)"
+  echo "==> Allineamento DB saltato (--skip-migrate)"
 fi
 
 echo "==> npm run build"
