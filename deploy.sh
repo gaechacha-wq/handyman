@@ -10,6 +10,11 @@
 #
 # Richiede: hosting/site.env con SITE_USER e SITE_GROUP (copia da site.env.example)
 # per --fix-perms. DATABASE_URL o MYSQL_* in .env.production per db:align.
+#
+# Se lanci `sh deploy.sh`, dash non supporta pipefail: riavvio automatico con bash.
+if [ -z "${BASH_VERSION:-}" ]; then
+  exec /usr/bin/env bash "$0" "$@"
+fi
 
 set -euo pipefail
 
