@@ -23,4 +23,4 @@ fi
 cd "$ROOT"
 
 ARGS=$(printf '%q ' "$@")
-exec su - "$SITE_USER" -s /bin/bash -c "cd $(printf '%q' "$ROOT") && exec sh deploy.sh $ARGS"
+exec su - "$SITE_USER" -s /bin/bash -c "cd $(printf '%q' "$ROOT") && exec bash deploy.sh $ARGS"

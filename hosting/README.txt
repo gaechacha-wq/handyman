@@ -18,19 +18,13 @@ Node.js
    - Utente: handyman.abreve.it_abvedfshaqi
    - Gruppo: psaserv
 
-2) Una tantum da root (permessi coerenti con le altre app)
-   chown -R handyman.abreve.it_abvedfshaqi:psaserv /var/www/vhosts/handyman.abreve.it/httpdocs
-   Oppure con site.env presente:
-     sudo sh hosting/fix-permissions.sh
-
-   EACCES su npm (es. oxide-linux-x64-gnu): node_modules creato da root o altro utente.
-   Da root:
-     sudo sh hosting/fix-permissions.sh
-   Poi come utente del sito (MAI npm ci da root nella cartella del sito):
-     cd .../httpdocs && rm -rf node_modules && npm ci
-   Usa il Node di Plesk se serve:
-     export PATH="/opt/plesk/node/25/bin:$PATH"
-     (adatta la versione alla cartella che hai in /opt/plesk/node/)
+2) Permessi / EACCES su npm (tutto in deploy.sh)
+   Con hosting/site.env (SITE_USER, SITE_GROUP) copiato da site.env.example:
+     sudo bash deploy.sh --fix-perms --pull
+   --fix-perms (solo root) fa chown su httpdocs e poi esegue il resto del deploy
+   come utente del sito (npm ci, db, build). Nessun npm nella cartella come root.
+   Senza pull:
+     sudo bash deploy.sh --fix-perms
 
 3) Config locale sul server (stesso schema dell'app di riferimento sul Plesk)
    - cp hosting/site.env.example hosting/site.env
@@ -39,13 +33,13 @@ Node.js
      per contenthunter, oppure le variabili MYSQL_* se preferite il formato separato.
    - In Plesk → Node.js le stesse variabili (DATABASE_URL o MYSQL_* + NODE_ENV).
 
-4) Deploy (sempre come utente del sito, non root)
-   Da root:
-     sh scripts/run-deploy-as-site-user.sh --pull
-   Oppure:
-     su - handyman.abreve.it_abvedfshaqi -s /bin/bash
-     cd /var/www/vhosts/handyman.abreve.it/httpdocs
-     sh deploy.sh --pull
+4) Deploy
+   Come utente del sito:
+     cd .../httpdocs && bash deploy.sh --pull
+   Da root (fix permessi + deploy in un colpo):
+     sudo bash deploy.sh --fix-perms --pull
+   Alternativa (solo su come utente):
+     bash scripts/run-deploy-as-site-user.sh --pull
 
 5) Plesk
    - Node.js: Application startup file = app.js
