@@ -20,6 +20,17 @@ Node.js
 
 2) Una tantum da root (permessi coerenti con le altre app)
    chown -R handyman.abreve.it_abvedfshaqi:psaserv /var/www/vhosts/handyman.abreve.it/httpdocs
+   Oppure con site.env presente:
+     sudo sh hosting/fix-permissions.sh
+
+   EACCES su npm (es. oxide-linux-x64-gnu): node_modules creato da root o altro utente.
+   Da root:
+     sudo sh hosting/fix-permissions.sh
+   Poi come utente del sito (MAI npm ci da root nella cartella del sito):
+     cd .../httpdocs && rm -rf node_modules && npm ci
+   Usa il Node di Plesk se serve:
+     export PATH="/opt/plesk/node/25/bin:$PATH"
+     (adatta la versione alla cartella che hai in /opt/plesk/node/)
 
 3) Config locale sul server (stesso schema dell'app di riferimento sul Plesk)
    - cp hosting/site.env.example hosting/site.env
